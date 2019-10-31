@@ -16,7 +16,6 @@ defmodule Kata14.BookGenerator do
   def process_words([first, second, third | rest], trigram_map)
       when is_map(trigram_map) and is_list(rest) do
     value = Map.get(trigram_map, "#{first} #{second}", [])
-
     trigram_map = Map.put(trigram_map, "#{first} #{second}", [third | value])
     process_words([second, third | rest], trigram_map)
   end
@@ -30,26 +29,29 @@ defmodule Kata14.BookGenerator do
     {:error, message}
   end
 
-  def make_sentence(trigram_map, word1, word2, count\\ 0) do
+  def make_sentence(trigram_map, word1, word2, count \\ 0) do
     "#{word1} #{word2}#{do_make_sentence(trigram_map, word1, word2, count)}"
   end
 
   def do_make_sentence(trigram_map, word1, word2, count) when count > 0 do
     case Map.get(trigram_map, "#{word1} #{word2}") do
-      
       third_words when is_list(third_words) ->
         word3 = Enum.random(third_words)
-        String.ends_with?(word3, ".")
-        |> case do
-          :false -> " #{word3}#{do_make_sentence(trigram_map, word2, word3, count)}"
-          :true -> " #{word3}#{do_make_sentence(trigram_map, word2, word3, count-1)}"
-        end
-        
-      _ -> ""
+        count = caluclate_sentences_left(word3, count)
+        " #{word3}#{do_make_sentence(trigram_map, word2, word3, count)}"
+      _ ->
+        ""
     end
   end
 
   def do_make_sentence(_trigram_map, _word1, _word2, _count) do
     ""
+  end
+
+  def caluclate_sentences_left(word, count) do
+    case String.ends_with?(word, ".") do
+      false -> count
+      true -> count-1
+    end
   end
 end

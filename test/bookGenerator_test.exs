@@ -16,7 +16,7 @@ defmodule Kata14.BookGeneratorTest do
     end
   end
 
-  describe "process_words" do
+  describe "process_words/1" do
     test "passes errors along" do
       error = {:error, "error message"}
       actual = BookGenerator.process_words(error)
